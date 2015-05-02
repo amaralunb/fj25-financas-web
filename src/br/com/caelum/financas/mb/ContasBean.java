@@ -40,8 +40,11 @@ public class ContasBean implements Serializable {
 
 	public List<Conta> getContas() {
 		System.out.println("Listando as contas");
+		if (this.contas == null) {
+			this.contas = contaDao.lista();
+		}
 
-		return contas;
+		return this.contas;
 	}
 
 	public void remove() {
