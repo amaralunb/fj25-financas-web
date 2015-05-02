@@ -44,8 +44,6 @@ public class MovimentacoesBean implements Serializable {
 	
 	public void remove() {
 		System.out.println("Removendo a movimentacao");
-		Conta contaRelacionada = contaDao.busca(contaId);
-		movimentacao.setConta(contaRelacionada);
 		
 		movimentacaoDao.remove(movimentacao);
 		this.movimentacoes = movimentacaoDao.lista();
