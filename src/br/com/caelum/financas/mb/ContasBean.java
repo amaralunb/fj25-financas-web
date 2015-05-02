@@ -2,10 +2,13 @@ package br.com.caelum.financas.mb;
 
 import java.io.Serializable;
 import java.util.List;
-import br.com.caelum.financas.modelo.Conta;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+
+import br.com.caelum.financas.dao.ContaDao;
+import br.com.caelum.financas.modelo.Conta;
 
 @Named
 @ViewScoped
@@ -16,6 +19,9 @@ public class ContasBean implements Serializable {
 	private Conta conta = new Conta();
 	private List<Conta> contas;
 
+	@Inject
+	private ContaDao contaDao;
+	
 	public Conta getConta() {
 		return conta;
 	}
@@ -26,7 +32,9 @@ public class ContasBean implements Serializable {
 
 	public void grava() {
 		System.out.println("Gravando a conta");
-
+		contaDao.adiciona(conta);
+		this.contas = contaDao.lista();
+		
 		limpaFormularioDoJSF();
 	}
 
