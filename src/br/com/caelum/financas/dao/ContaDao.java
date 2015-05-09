@@ -15,9 +15,13 @@ public class ContaDao {
 	EntityManager manager;
 
 	public void adiciona(Conta conta) {
-		this.manager.persist(conta);
+		this.manager.persist(conta); //managed
 	}
 
+	public void altera(Conta conta) {
+		this.manager.merge(conta);
+	}
+	
 	public Conta busca(Integer id) {
 		return this.manager.find(Conta.class, id);
 	}

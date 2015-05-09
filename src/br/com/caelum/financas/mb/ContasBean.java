@@ -31,10 +31,14 @@ public class ContasBean implements Serializable {
 	}
 
 	public void grava() {
-		System.out.println("Gravando a conta");
-		contaDao.adiciona(conta);
-		this.contas = contaDao.lista();
+		if(this.conta.getId() == null) {
+			System.out.println("Gravando a conta");
+			contaDao.adiciona(conta);
+		} else {
+			contaDao.altera(conta);
+		}
 		
+		this.contas = contaDao.lista();
 		limpaFormularioDoJSF();
 	}
 
