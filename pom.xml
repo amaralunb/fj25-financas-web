@@ -3,13 +3,19 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.caelum.fj25</groupId>
 	<artifactId>fj25-financas-web</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<description>Projeto FJ25 - Luiz - Caelum</description>
+
+	<properties>
+		<javaee.version>7.0</javaee.version>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<version>7.0</version>
+			<version>${javaee.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -17,22 +23,20 @@
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-<!-- 	<distributionManagement> -->
-<!-- 		<repository> -->
-<!-- 			<uniqueVersion>false</uniqueVersion> -->
-<!-- 			<id>corp1</id> -->
-<!-- 			<name>Corporate Repository</name> -->
-<!-- 			<url>scp://repo/maven2</url> -->
-<!-- 			<layout>default</layout> -->
-<!-- 		</repository> -->
-<!-- 	</distributionManagement> -->
 </project>
