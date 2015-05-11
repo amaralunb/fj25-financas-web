@@ -6,8 +6,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.AccessTimeout;
+import javax.ejb.Schedule;
 import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
@@ -15,6 +17,7 @@ import javax.ejb.TimerService;
 
 //@Stateless
 @Singleton
+@Startup
 @AccessTimeout(unit = TimeUnit.SECONDS, value = 5)
 public class Agendador {
 
@@ -64,5 +67,10 @@ public class Agendador {
 	@Timeout
 	public void verificacaoPeriodicaSeHaNovasContas(Timer timer) {
 		System.out.println(timer.getInfo());
+	}
+	
+	@Schedule(hour="*/1", minute="0", second="0", persistent=false)
+	public void enviaEmailCadaMinutoComInformacoesDasUltimasMovimentacoes() {
+		System.out.println("Enviando e-mail a cada hora");
 	}
 }

@@ -13,6 +13,7 @@ import br.com.caelum.financas.exception.ValorInvalidoException;
 import br.com.caelum.financas.modelo.Conta;
 import br.com.caelum.financas.modelo.Movimentacao;
 import br.com.caelum.financas.modelo.TipoMovimentacao;
+import br.com.caelum.financas.modelo.ValorPorMesEAno;
 
 @Stateless
 public class MovimentacaoDao {
@@ -20,6 +21,21 @@ public class MovimentacaoDao {
 	@PersistenceContext
 	EntityManager manager;
 
+	public List<ValorPorMesEAno> listaMesesComMovimentacoes (Conta conta, TipoMovimentacao tipo) {
+		String jpql = 
+				"select new br.com.caelum.financas.modelo.ValorPorMesEAno(month(m.data),year(m.data),sum(m.valor)) "
+				+ "from Movimentacao m "
+				+ "where m.conta = :conta and m.tipoMovimentacao = :tipo "
+				+ "group by year(m.data)||month(m.data) "
+				+ "order by sum(m.valor) desc";
+		
+		TypedQuery<ValorPorMesEAno> query = this.manager.createQuery(jpql, ValorPorMesEAno.class);
+		query.setParameter("conta", conta);
+		query.setParameter("tipo", tipo);
+		
+		return query.getResultList();
+	}
+	
 	public List<Movimentacao> buscaTodasMovimentacoesDaConta(String titular) {
 		String jpql = "select m from Movimentacao m where m.conta.titular like :titular";
 		

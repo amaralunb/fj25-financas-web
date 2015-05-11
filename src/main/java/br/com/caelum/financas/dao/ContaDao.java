@@ -16,9 +16,9 @@ public class ContaDao {
 	@PersistenceContext
 	EntityManager manager;
 
-	@TransactionAttribute(TransactionAttributeType.MANDATORY)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void adiciona(Conta conta) {
-		this.manager.persist(conta); //managed
+		this.manager.persist(conta);
 	}
 
 	public void altera(Conta conta) {
