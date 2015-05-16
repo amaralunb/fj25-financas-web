@@ -8,8 +8,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.caelum.financas.dao.CategoriaDao;
 import br.com.caelum.financas.dao.ContaDao;
 import br.com.caelum.financas.dao.MovimentacaoDao;
+import br.com.caelum.financas.modelo.Categoria;
 import br.com.caelum.financas.modelo.Conta;
 import br.com.caelum.financas.modelo.Movimentacao;
 import br.com.caelum.financas.modelo.TipoMovimentacao;
@@ -20,6 +22,7 @@ public class MovimentacoesBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private List<Categoria> categorias;
 	private List<Movimentacao> movimentacoes;
 	private Movimentacao movimentacao = new Movimentacao();
 	private Integer contaId;
@@ -31,13 +34,16 @@ public class MovimentacoesBean implements Serializable {
 	@Inject
 	private ContaDao contaDao;
 	
+	@Inject
+	private CategoriaDao categoriaDao;
+	
 	public void grava() {
 		System.out.println("Fazendo a gravacao da movimentacao");
 		Conta contaRelacionada = contaDao.busca(contaId);
 		movimentacao.setConta(contaRelacionada);
 		
 		movimentacaoDao.adiciona(movimentacao);
-		this.movimentacoes = movimentacaoDao.lista();
+		this.movimentacoes = movimentacaoDao.listaComCategorias();
 		
 		limpaFormularioDoJSF();
 	}
@@ -46,7 +52,7 @@ public class MovimentacoesBean implements Serializable {
 		System.out.println("Removendo a movimentacao");
 		
 		movimentacaoDao.remove(movimentacao);
-		this.movimentacoes = movimentacaoDao.lista();
+		this.movimentacoes = movimentacaoDao.listaComCategorias();
 		
 		limpaFormularioDoJSF();
 	}
@@ -60,7 +66,7 @@ public class MovimentacoesBean implements Serializable {
 	}
 	
 	public Movimentacao getMovimentacao() {
-		if(movimentacao.getData()==null) {
+		if(movimentacao.getData() == null) {
 			movimentacao.setData(Calendar.getInstance());
 		}
 		return movimentacao;
@@ -87,15 +93,31 @@ public class MovimentacoesBean implements Serializable {
 		this.categoriaId = categoriaId;
 	}
 
+	public TipoMovimentacao[] getTiposDeMovimentacao() {
+		return TipoMovimentacao.values();
+	}
+	
+	public List<Categoria> getCategorias() {
+		if(this.categorias == null) {
+			System.out.println("Listando as categorias");
+			this.categorias = this.categoriaDao.lista();
+		}
+		
+		return this.categorias;
+	}
+	
+	public void adicionaCategoria() {
+		if(this.categoriaId != null && this.categoriaId > 0) {
+			Categoria categoria = categoriaDao.procura(this.categoriaId);
+			this.movimentacao.getCategorias().add(categoria);
+		}
+	}
+	
 	/**
 	 * Esse metodo apenas limpa o formulario da forma com que o JSF espera.
 	 * Invoque-o no momento manager que precisar do formulario vazio.
 	 */
 	private void limpaFormularioDoJSF() {
 		this.movimentacao = new Movimentacao();
-	}
-
-	public TipoMovimentacao[] getTiposDeMovimentacao() {
-		return TipoMovimentacao.values();
 	}
 }

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -18,9 +19,19 @@ import br.com.caelum.financas.modelo.ValorPorMesEAno;
 @Stateless
 public class MovimentacaoDao {
 
-	@PersistenceContext
+//	@PersistenceContext
+	@Inject
 	EntityManager manager;
 
+	public List<Movimentacao> listaComCategorias() {
+		String jpql = 
+				"select distinct m "
+				+ "from Movimentacao m "
+				+ "left join fetch m.categorias";
+		
+		return this.manager.createQuery(jpql).getResultList();
+	}
+	
 	public List<ValorPorMesEAno> listaMesesComMovimentacoes (Conta conta, TipoMovimentacao tipo) {
 		String jpql = 
 				"select new br.com.caelum.financas.modelo.ValorPorMesEAno(month(m.data),year(m.data),sum(m.valor)) "
@@ -75,6 +86,8 @@ public class MovimentacaoDao {
 	}
 	
 	public void adiciona(Movimentacao movimentacao) {
+		this.manager.joinTransaction();
+		
 		this.manager.persist(movimentacao);
 		
 		if(movimentacao.getValor().compareTo(BigDecimal.ZERO) < 0) {
@@ -91,6 +104,8 @@ public class MovimentacaoDao {
 	}
 
 	public void remove(Movimentacao movimentacao) {
+		this.manager.joinTransaction();
+		
 		Movimentacao movimentacaoParaRemover = this.manager.find(Movimentacao.class, movimentacao.getId());
 		this.manager.remove(movimentacaoParaRemover);
 	}
